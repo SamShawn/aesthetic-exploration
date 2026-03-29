@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>森之境 | Forest of Wonder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-top: #e8f4f8;
+      --sky-bottom: #fef9f3;
+      --grass: #7cb342;
+      --forest: #4a7c59;
+      --earth: #a67c52;
+      --terracotta: #c47856;
+      --cloud-white: #ffffff;
+      --text-primary: #2d3a3a;
+      --text-secondary: #5a6b6b;
+      --accent-gold: #d4a574;
+      --magic-glow: #fff8e7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 50%, #f5e6d3 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    .paper-texture {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Watercolor blur filter */
+    .watercolor-blur {
+      filter: url(#watercolor);
+    }
+
+    /* SVG filter for hand-drawn edges */
+    .hand-drawn {
+      filter: url(#hand-drawn);
+    }
+
+    /* Organic shape with varying border radius */
+    .organic-shape {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    .organic-shape-2 {
+      border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+    }
+
+    /* Floating animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-15px) translateX(10px); }
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-100vw); }
+      100% { transform: translateX(100vw); }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    @keyframes gentle-rock {
+      0%, 100% { transform: rotate(-2deg) translateY(0); }
+      25% { transform: rotate(1deg) translateY(-5px); }
+      75% { transform: rotate(-1deg) translateY(-3px); }
+    }
+
+    @keyframes rise-up {
+      0% { opacity: 0; transform: translateY(40px) rotate(-1deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes fade-in-scene {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes firefly {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 0.8; transform: scale(1); }
+    }
+
+    @keyframes grass-wave {
+      0%, 100% { transform: skewX(0deg); }
+      25% { transform: skewX(2deg); }
+      75% { transform: skewX(-1deg); }
+    }
+
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .animate-float-slow {
+      animation: float-slow 8s ease-in-out infinite;
+    }
+
+    .animate-drift {
+      animation: drift 60s linear infinite;
+    }
+
+    .animate-sway {
+      animation: sway 4s ease-in-out infinite;
+    }
+
+    .animate-twinkle {
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    .animate-rock {
+      animation: gentle-rock 3s ease-in-out infinite;
+    }
+
+    .animate-rise {
+      animation: rise-up 1s ease-out forwards;
+    }
+
+    .animate-firefly {
+      animation: firefly 4s ease-in-out infinite;
+    }
+
+    .animate-grass {
+      animation: grass-wave 5s ease-in-out infinite;
+    }
+
+    /* Parallax layers */
+    .parallax-cloud {
+      will-change: transform;
+      transition: transform 0.1s ease-out;
+    }
+
+    .parallax-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--earth);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--terracotta);
+    }
+
+    /* Navigation */
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--terracotta);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Card hover effect */
+    .story-card {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .story-card:hover {
+      transform: translateY(-8px) rotate(-1deg);
+      box-shadow:
+        0 20px 40px rgba(74, 124, 89, 0.15),
+        0 0 0 1px rgba(166, 124, 82, 0.1);
+    }
+
+    /* Glow effect */
+    .warm-glow {
+      position: relative;
+    }
+
+    .warm-glow::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(ellipse, var(--magic-glow) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: -1;
+      border-radius: inherit;
+    }
+
+    .story-card:hover .warm-glow::before {
+      opacity: 0.6;
+    }
+
+    /* Scene container */
+    .scene-container {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Mountains */
+    .mountain-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+    }
+
+    .mountain-1 {
+      height: 35%;
+      opacity: 0.6;
+    }
+
+    .mountain-2 {
+      height: 25%;
+      opacity: 0.8;
+    }
+
+    .mountain-3 {
+      height: 15%;
+      opacity: 1;
+    }
+
+    /* Cloud styles */
+    .cloud {
+      position: absolute;
+      background: var(--cloud-white);
+      border-radius: 50px;
+      opacity: 0.9;
+    }
+
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .cloud-1 {
+      width: 120px;
+      height: 40px;
+    }
+
+    .cloud-1::before {
+      width: 50px;
+      height: 50px;
+      top: -25px;
+      left: 20px;
+    }
+
+    .cloud-1::after {
+      width: 35px;
+      height: 35px;
+      top: -15px;
+      left: 55px;
+    }
+
+    /* Grass blades */
+    .grass-blade {
+      position: absolute;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to top, var(--forest), var(--grass));
+      border-radius: 50% 50% 0 0;
+      transform-origin: bottom center;
+    }
+
+    /* Soot sprite (ス垢) decoration */
+    .soot-sprite {
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle at 30% 30%, #555, #222);
+      border-radius: 50% 50% 40% 60%;
+      position: absolute;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    /* Hero text styling */
+    .hero-title {
+      font-family: 'Noto Serif JP', serif;
+      text-shadow: 2px 2px 0 var(--cloud-white), 4px 4px 10px rgba(74, 124, 89, 0.2);
+    }
+
+    /* Card styling */
+    .story-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(166, 124, 82, 0.2);
+    }
+
+    /* Section reveal animation */
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Star twinkle */
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+
+    /* Leaf decoration */
+    .floating-leaf {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0.6;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .scene-container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Paper texture overlay -->
+  <div class="paper-texture"></div>
+
+  <!-- SVG Filters -->
+  <svg style="display: none;">
+    <defs>
+      <!-- Watercolor blur effect -->
+      <filter id="watercolor" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+        <feGaussianBlur stdDeviation="0.5"/>
+      </filter>
+
+      <!-- Hand-drawn edge effect -->
+      <filter id="hand-drawn" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Parallax Background Layers -->
+  <div class="parallax-layer" id="mountains-back">
+    <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 800">
+      <defs>
+        <linearGradient id="mountainGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#8fa"/>
+ <stop offset="100%" style="stop-color:#5a8"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,800 L0,500 Q200,350 400,480 T800,400 T1200,450 L1440,380 L1440,800 Z" fill="url(#mountainGrad1)" opacity="0.4"/>
+    </svg>
+  </div>
+
+  <div class="parallax-layer" id="mountains-mid">
+    <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 800">
+      <defs>
+        <linearGradient id="mountainGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#7cb342"/>
+          <stop offset="100%" style="stop-color:#4a7c59"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,800 L0,600 Q300,450 600,550 T1000,500 L1440,550 L1440,800 Z" fill="url(#mountainGrad2)" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="parallax-layer" id="mountains-front">
+    <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 800">
+      <defs>
+        <linearGradient id="mountainGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#4a7c59"/>
+          <stop offset="100%" style="stop-color:#2d5a3d"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,800 L0,700 Q200,620 400,680 T800,650 L1200,680 L1440,650 L1440,800 Z" fill="url(#mountainGrad3)" opacity="0.8"/>
+    </svg>
+  </div>
+
+  <!-- Floating Clouds -->
+  <div class="fixed inset-0 pointer-events-none" style="z-index: 10;">
+    <div class="cloud cloud-1 parallax-cloud" data-speed="0.3" style="top: 10%; left: 10%; animation: drift 80s linear infinite;"></div>
+    <div class="cloud cloud-1 parallax-cloud" data-speed="0.5" style="top: 20%; left: 60%; animation: drift 100s linear infinite; animation-delay: -30s; transform: scale(0.7);"></div>
+    <div class="cloud cloud-1 parallax-cloud" data-speed="0.2" style="top: 5%; left: 80%; animation: drift 120s linear infinite; animation-delay: -60s; transform: scale(0.5);"></div>
+    <div class="cloud cloud-1 parallax-cloud" data-speed="0.4" style="top: 30%; left: 30%; animation: drift 90s linear infinite; animation-delay: -20s; transform: scale(0.8);"></div>
+  </div>
+
+  <!-- Grass Layer -->
+  <div class="fixed bottom-0 left-0 w-full pointer-events-none" style="height: 120px; z-index: 20;">
+    <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 120">
+      <defs>
+        <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#7cb342"/>
+          <stop offset="100%" style="stop-color:#558b2f"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,120 Q50,80 100,100 T200,90 T300,105 T400,85 T500,100 T600,80 T700,95 T800,85 T900,100 T1000,80 T1100,95 T1200,85 T1300,100 T1400,90 L1440,100 L1440,120 Z" fill="url(#grassGrad)"/>
+    </svg>
+  </div>
+
+  <!-- Fireflies -->
+  <div class="fixed inset-0 pointer-events-none" style="z-index: 15;">
+    <div class="animate-firefly" style="top: 30%; left: 20%;"></div>
+    <div class="animate-firefly" style="top: 50%; left: 70%; animation-delay: -1s;"></div>
+    <div class="animate-firefly" style="top: 40%; left: 40%; animation-delay: -2s;"></div>
+    <div class="animate-firefly" style="top: 60%; left: 85%; animation-delay: -3s;"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="scene-container" style="z-index: 100;">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 px-8 py-6">
+      <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <a href="#" class="font-['Noto_Serif_JP'] text-2xl font-bold text-[var(--forest)] tracking-wide" style="font-family: 'Noto Serif JP', serif;">
+          森
+        </a>
+        <div class="flex gap-8">
+          <a href="#about" class="nav-link text-[var(--text-primary)] hover:text-[var(--forest)] transition-colors">故事</a>
+          <a href="#works" class="nav-link text-[var(--text-primary)] hover:text-[var(--forest)] transition-colors">作品</a>
+          <a href="#contact" class="nav-link text-[var(--text-primary)] hover:text-[var(--forest)] transition-colors">相遇</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-6 pt-20">
+      <div class="text-center animate-rise" style="animation-delay: 0.3s;">
+        <!-- Decorative avatar placeholder -->
+        <div class="mb-8 relative inline-block">
+          <div class="organic-shape w-40 h-40 mx-auto bg-gradient-to-br from-[var(--grass)] to-[var(--forest)] flex items-center justify-center shadow-lg" style="box-shadow: 0 20px 40px rgba(74, 124, 89, 0.3);">
+            <svg class="w-20 h-20 text-white" viewBox="0 0 100 100" fill="currentColor">
+              <circle cx="50" cy="35" r="18"/>
+              <ellipse cx="50" cy="80" rx="30" ry="20"/>
+              <circle cx="42" cy="32" r="3" fill="#2d5a3d"/>
+              <circle cx="58" cy="32" r="3" fill="#2d5a3d"/>
+              <path d="M45 42 Q50 47 55 42" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <!-- Floating decorative elements -->
+          <div class="absolute -top-4 -right-4 w-6 h-6 bg-[var(--accent-gold)] rounded-full animate-float"></div>
+          <div class="absolute -bottom-2 -left-4 w-4 h-4 bg-[var(--terracotta)] rounded-full animate-float" style="animation-delay: -1s;"></div>
+        </div>
+
+        <h1 class="hero-title text-5xl md:text-6xl text-[var(--forest)] mb-4" style="font-family: 'Noto Serif JP', serif;">
+          森林中的守望者
+        </h1>
+
+        <p class="text-xl md:text-2xl text-[var(--text-secondary)] mb-8 font-light" style="font-family: 'Noto Serif JP', serif;">
+          用代码书写故事，让每一个像素都充满温度
+        </p>
+
+        <div class="flex justify-center gap-6">
+          <a href="#works" class="organic-shape px-8 py-3 bg-[var(--forest)] text-white hover:bg-[var(--terracotta)] transition-all duration-300 shadow-lg hover:shadow-xl">
+            看看我的故事
+          </a>
+          <a href="#contact" class="organic-shape-2 px-8 py-3 border-2 border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white transition-all duration-300">
+            打个招呼
+          </a>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <svg class="w-6 h-6 text-[var(--forest)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-32 px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="story-card organic-shape p-12 md:p-16 reveal-section">
+          <h2 class="text-3xl md:text-4xl text-[var(--forest)] mb-8 text-center" style="font-family: 'Noto Serif JP', serif;">
+            故事的开始
+          </h2>
+
+          <div class="prose prose-lg text-[var(--text-secondary)] space-y-6">
+            <p>
+              在我还很小的时候，常常躺在草地上仰望天空。
+              那些柔软的云朵像是会移动的城堡，风是它们的翅膀。
+            </p>
+            <p>
+              长大后，我把这份对世界的想象装进了代码里。
+              每一个网站、每一个应用，都是我为这个世界编织的小小梦境。
+            </p>
+            <p>
+              我相信，最好的设计不是炫技，而是传递温暖。
+              就像宫崎骏爷爷的动画，表面上很简单，
+              但每一帧都藏着对生命、对自然的深深敬意。
+            </p>
+            <div class="flex justify-center mt-8">
+              <div class="flex gap-4">
+                <span class="text-4xl">🌿</span>
+                <span class="text-4xl">🍃</span>
+                <span class="text-4xl">✨</span>
+                <span class="text-4xl">🦋</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="py-32 px-6">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl md:text-4xl text-[var(--forest)] mb-12 text-center reveal-section" style="font-family: 'Noto Serif JP', serif;">
+          走过的路
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Project Card 1 -->
+          <div class="story-card organic-shape p-8 warm-glow reveal-section" style="animation-delay: 0.1s;">
+            <div class="h-40 bg-gradient-to-br from-[var(--sky-top)] to-[var(--grass)] rounded-2xl mb-6 flex items-center justify-center">
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </div>
+            <h3 class="text-xl text-[var(--forest)] mb-2" style="font-family: 'Noto Serif JP', serif;">森林中的小屋</h3>
+            <p class="text-[var(--text-secondary)] mb-4">一个让心灵栖息的民宿预订网站</p>
+            <div class="flex gap-2">
+              <span class="px-3 py-1 bg-[var(--grass)]/20 text-[var(--forest)] rounded-full text-sm">React</span>
+              <span class="px-3 py-1 bg-[var(--grass)]/20 text-[var(--forest)] rounded-full text-sm">Node.js</span>
+            </div>
+          </div>
+
+          <!-- Project Card 2 -->
+          <div class="story-card organic-shape-2 p-8 warm-glow reveal-section" style="animation-delay: 0.2s;">
+            <div class="h-40 bg-gradient-to-br from-[var(--terracotta)] to-[var(--earth)] rounded-2xl mb-6 flex items-center justify-center">
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl text-[var(--forest)] mb-2" style="font-family: 'Noto Serif JP', serif;">时光守护者</h3>
+            <p class="text-[var(--text-secondary)] mb-4">记录生活碎片的温柔日记应用</p>
+            <div class="flex gap-2">
+              <span class="px-3 py-1 bg-[var(--terracotta)]/20 text-[var(--terracotta)] rounded-full text-sm">Vue</span>
+              <span class="px-3 py-1 bg-[var(--terracotta)]/20 text-[var(--terracotta)] rounded-full text-sm">Firebase</span>
+            </div>
+          </div>
+
+          <!-- Project Card 3 -->
+          <div class="story-card organic-shape p-8 warm-glow reveal-section" style="animation-delay: 0.3s;">
+            <div class="h-40 bg-gradient-to-br from-[var(--accent-gold)] to-[var(--terracotta)] rounded-2xl mb-6 flex items-center justify-center">
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl text-[var(--forest)] mb-2" style="font-family: 'Noto Serif JP', serif;">秘密花园</h3>
+            <p class="text-[var(--text-secondary)] mb-4">与自己和解的冥想与情绪记录工具</p>
+            <div class="flex gap-2">
+              <span class="px-3 py-1 bg-[var(--accent-gold)]/20 text-[var(--terracotta)] rounded-full text-sm">React Native</span>
+            </div>
+          </div>
+
+          <!-- Project Card 4 -->
+          <div class="story-card organic-shape-2 p-8 warm-glow reveal-section" style="animation-delay: 0.4s;">
+            <div class="h-40 bg-gradient-to-br from-[var(--forest)] to-[var(--grass)] rounded-2xl mb-6 flex items-center justify-center">
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl text-[var(--forest)] mb-2" style="font-family: 'Noto Serif JP', serif;">风的守护</h3>
+            <p class="text-[var(--text-secondary)] mb-4">为流浪动物搭建的温暖庇护所</p>
+            <div class="flex gap-2">
+              <span class="px-3 py-1 bg-[var(--forest)]/20 text-[var(--forest)] rounded-full text-sm">Next.js</span>
+              <span class="px-3 py-1 bg-[var(--forest)]/20 text-[var(--forest)] rounded-full text-sm">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6 pb-40">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="story-card organic-shape p-12 reveal-section">
+          <h2 class="text-3xl md:text-4xl text-[var(--forest)] mb-8" style="font-family: 'Noto Serif JP', serif;">
+            让我们相遇
+          </h2>
+
+          <p class="text-lg text-[var(--text-secondary)] mb-8">
+            就像森林里的两条小径，
+            <br>
+            也许我们注定要在这里相逢。
+          </p>
+
+          <div class="flex justify-center gap-6 mb-12">
+            <!-- Email -->
+            <a href="mailto:hello@example.com" class="organic-shape w-14 h-14 flex items-center justify-center bg-[var(--grass)]/10 hover:bg-[var(--grass)]/30 transition-all group">
+              <svg class="w-6 h-6 text-[var(--forest)] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </a>
+
+            <!-- GitHub -->
+            <a href="#" class="organic-shape w-14 h-14 flex items-center justify-center bg-[var(--grass)]/10 hover:bg-[var(--grass)]/30 transition-all group">
+              <svg class="w-6 h-6 text-[var(--forest)] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+
+            <!-- Twitter -->
+            <a href="#" class="organic-shape w-14 h-14 flex items-center justify-center bg-[var(--grass)]/10 hover:bg-[var(--grass)]/30 transition-all group">
+              <svg class="w-6 h-6 text-[var(--forest)] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+          </div>
+
+          <p class="text-[var(--text-secondary)] text-sm">
+            Made with 🧡 in the forest
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Decorative Soot Sprites (ス垢) -->
+  <div class="fixed pointer-events-none" style="z-index: 50; bottom: 100px; right: 20%;">
+    <div class="soot-sprite" style="animation-delay: -2s;"></div>
+  </div>
+  <div class="fixed pointer-events-none" style="z-index: 50; bottom: 150px; left: 15%;">
+    <div class="soot-sprite" style="animation-delay: -5s; transform: scale(0.7);"></div>
+  </div>
+
+  <script>
+    // Parallax scrolling effect
+    const clouds = document.querySelectorAll('.parallax-cloud');
+    const mountainsBack = document.getElementById('mountains-back');
+    const mountainsMid = document.getElementById('mountains-mid');
+    const mountainsFront = document.getElementById('mountains-front');
+
+    let ticking = false;
+
+    function updateParallax() {
+      const scrollY = window.scrollY;
+
+      // Cloud parallax
+      clouds.forEach(cloud => {
+        const speed = parseFloat(cloud.dataset.speed) || 0.3;
+        cloud.style.transform = `translateY(${scrollY * speed}px)`;
+      });
+
+      // Mountains parallax
+      if (mountainsBack) {
+        mountainsBack.style.transform = `translateY(${scrollY * 0.1}px)`;
+      }
+      if (mountainsMid) {
+        mountainsMid.style.transform = `translateY(${scrollY * 0.2}px)`;
+      }
+      if (mountainsFront) {
+        mountainsFront.style.transform = `translateY(${scrollY * 0.3}px)`;
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    });
+
+    // Intersection Observer for reveal animations
+    const revealElements = document.querySelectorAll('.reveal-section');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add subtle floating movement to cards on hover
+    document.querySelectorAll('.story-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.animation = 'none';
+        card.offsetHeight; // Trigger reflow
+        card.style.animation = 'gentle-rock 3s ease-in-out infinite';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.animation = '';
+      });
+    });
+
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.animate-float, .animate-float-slow, .animate-drift, .animate-sway, .animate-twinkle, .animate-firefly, .animate-grass').forEach(el => {
+        el.style.animation = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
