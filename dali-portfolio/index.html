@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Persistence of Memory — Dalí Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --ochre: #CC7722;
+            --sand: #F4A460;
+            --sky-blue: #007FFF;
+            --violet: #8A2BE2;
+            --pure-white: #FFFFFF;
+            --deep-black: #000000;
+        }
+
+        * {
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #1a0a2e 0%, #4a1942 30%, #d4856a 70%, #f4d03f 100%);
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Custom Cursor - Distorted Spoon */
+        .cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease;
+        }
+
+        .cursor::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background: linear-gradient(90deg, #c0c0c0, #ffffff);
+            border-radius: 50% 20% 20% 50%;
+            transform: rotate(-30deg);
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            animation: spoonWobble 2s ease-in-out infinite;
+        }
+
+        .cursor::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 35px;
+            background: linear-gradient(180deg, #c0c0c0, #808080);
+            top: 45%;
+            left: 52%;
+            border-radius: 0 0 3px 3px;
+            transform: rotate(15deg);
+            transform-origin: top center;
+            animation: handleBend 3s ease-in-out infinite;
+        }
+
+        @keyframes spoonWobble {
+            0%, 100% { transform: rotate(-30deg) scaleX(1); }
+            25% { transform: rotate(-25deg) scaleX(0.9); }
+            50% { transform: rotate(-35deg) scaleX(1.1); }
+            75% { transform: rotate(-28deg) scaleX(0.95); }
+        }
+
+        @keyframes handleBend {
+            0%, 100% { transform: rotate(15deg); }
+            50% { transform: rotate(25deg); }
+        }
+
+        /* Desert Background */
+        .desert-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(
+                180deg,
+                #ff6b35 0%,
+                #f7931e 15%,
+                #ffcc00 35%,
+                #87ceeb 50%,
+                #4a90d9 70%,
+                #2c5aa0 100%
+            );
+            z-index: -3;
+        }
+
+        .desert-ground {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45vh;
+            background: linear-gradient(
+                180deg,
+                #d4856a 0%,
+                #c4785a 20%,
+                #b56b4a 50%,
+                #8b5a3c 80%,
+                #5d3a1a 100%
+            );
+            z-index: -2;
+        }
+
+        /* Floating Stones Navigation */
+        .floating-stone {
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2rem;
+            color: #1a0a2e;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: linear-gradient(145deg, #d4c4a8, #a89878);
+            border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+            box-shadow:
+                8px 8px 20px rgba(0,0,0,0.4),
+                inset -5px -5px 15px rgba(0,0,0,0.2),
+                inset 5px 5px 15px rgba(255,255,255,0.3);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: stoneFloat 6s ease-in-out infinite;
+        }
+
+        .floating-stone:nth-child(2) { animation-delay: -1s; }
+        .floating-stone:nth-child(3) { animation-delay: -2s; }
+        .floating-stone:nth-child(4) { animation-delay: -3s; }
+
+        @keyframes stoneFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(2deg); }
+            50% { transform: translateY(-5px) rotate(-1deg); }
+            75% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .floating-stone:hover {
+            transform: translateY(-30px) scale(1.15) rotate(5deg);
+            background: linear-gradient(145deg, #e8d8b8, #c8b898);
+            box-shadow:
+                15px 15px 30px rgba(0,0,0,0.5),
+                inset -8px -8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Melting Clock Element */
+        .melting-clock {
+            position: absolute;
+            width: 180px;
+            height: 100px;
+            background: linear-gradient(145deg, #f5f5dc, #e8e4d0);
+            border: 4px solid #2c1810;
+            border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%;
+            box-shadow:
+                inset 0 0 30px rgba(0,0,0,0.1),
+                10px 15px 30px rgba(0,0,0,0.4);
+            overflow: hidden;
+            animation: melt 8s ease-in-out infinite;
+        }
+
+        @keyframes melt {
+            0%, 100% {
+                border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%;
+                transform: translateY(0) scale(1);
+            }
+            25% {
+                border-radius: 45% 55% 45% 55% / 55% 65% 35% 35%;
+                transform: translateY(10px) scale(0.98);
+            }
+            50% {
+                border-radius: 55% 45% 35% 65% / 50% 70% 30% 40%;
+                transform: translateY(20px) scale(0.95);
+            }
+            75% {
+                border-radius: 40% 60% 50% 50% / 65% 55% 40% 45%;
+                transform: translateY(15px) scale(0.97);
+            }
+        }
+
+        .melting-clock::before {
+            content: 'Ⅻ';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #2c1810;
+        }
+
+        .melting-clock::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 35px;
+            background: #2c1810;
+            transform-origin: bottom center;
+            transform: translateX(-50%) translateY(-100%) rotate(45deg);
+            animation: clockHand 12s linear infinite;
+        }
+
+        @keyframes clockHand {
+            from { transform: translateX(-50%) translateY(-100%) rotate(0deg); }
+            to { transform: translateX(-50%) translateY(-100%) rotate(360deg); }
+        }
+
+        /* Dripping effect on hover */
+        .melting-clock:hover {
+            animation: dripMore 0.5s forwards;
+        }
+
+        @keyframes dripMore {
+            to {
+                border-radius: 30% 70% 50% 50% / 20% 80% 50% 50%;
+                transform: translateY(40px) scaleY(0.8);
+            }
+        }
+
+        /* Drawer Card */
+        .drawer-card {
+            position: relative;
+            width: 300px;
+            min-height: 250px;
+            background: linear-gradient(180deg, #8b4513, #654321);
+            border: 3px solid #3d2817;
+            border-radius: 5px;
+            box-shadow:
+                15px 15px 40px rgba(0,0,0,0.5),
+                inset 0 0 20px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+
+        .drawer-card::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 10%;
+            right: 10%;
+            height: 8px;
+            background: linear-gradient(90deg, #cd853f, #daa520, #cd853f);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .drawer-card::after {
+            content: '';
+            position: absolute;
+            top: calc(30% + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            background: radial-gradient(ellipse, #ffd700, #b8860b);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Card Content */
+        .card-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 2rem;
+            text-align: center;
+            color: #f5f5dc;
+        }
+
+        .card-content h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Legs for drawer cards */
+        .drawer-leg {
+            position: absolute;
+            bottom: -60px;
+            width: 12px;
+            height: 60px;
+            background: linear-gradient(90deg, #654321, #8b4513, #654321);
+            border-radius: 0 0 5px 5px;
+        }
+
+        .drawer-leg:nth-child(1) { left: 15px; transform: rotate(-5deg); }
+        .drawer-leg:nth-child(2) { right: 15px; transform: rotate(5deg); }
+        .drawer-leg:nth-child(3) { left: 50%; transform: translateX(-50%); height: 70px; }
+
+        /* Walking animation */
+        .drawer-card:hover .drawer-leg {
+            animation: walkLeg 0.5s ease-in-out infinite;
+        }
+
+        .drawer-leg:nth-child(1) { animation-delay: 0s; }
+        .drawer-leg:nth-child(2) { animation-delay: 0.25s; }
+        .drawer-leg:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes walkLeg {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Double Image - Cloud that looks like a face */
+        .double-image {
+            position: relative;
+            width: 200px;
+            height: 120px;
+            filter: contrast(1.2) saturate(0.8);
+        }
+
+        .cloud-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 80px 60px at 30% 40%, #fff 0%, transparent 70%),
+                radial-gradient(ellipse 100px 70px at 60% 50%, rgba(255,255,255,0.9) 0%, transparent 70%),
+                radial-gradient(ellipse 60px 40px at 80% 30%, #fff 0%, transparent 70%);
+            animation: cloudMorph 15s ease-in-out infinite;
+        }
+
+        .face-features {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .double-image:hover .face-features {
+            opacity: 1;
+        }
+
+        .eye {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #1a0a2e;
+            border-radius: 50%;
+            top: 45%;
+        }
+
+        .eye:first-of-type { left: 35%; }
+        .eye:last-of-type { right: 35%; }
+
+        .nose {
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #3d2817;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) rotate(10deg);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .mouth {
+            position: absolute;
+            width: 40px;
+            height: 15px;
+            border: 3px solid #3d2817;
+            border-top: none;
+            border-radius: 0 0 50% 50%;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes cloudMorph {
+            0%, 100% { transform: scale(1) translateX(0); }
+            33% { transform: scale(1.05) translateX(10px); }
+            66% { transform: scale(0.98) translateX(-10px); }
+        }
+
+        /* Ant decoration */
+        .ant {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            animation: antWalk 4s linear infinite;
+        }
+
+        .ant-body {
+            position: absolute;
+            width: 8px;
+            height: 6px;
+            background: #1a0a0a;
+            border-radius: 50%;
+        }
+
+        .ant-body:nth-child(1) { left: 0; }
+        .ant-body:nth-child(2) { left: 10px; width: 10px; height: 8px; }
+        .ant-body:nth-child(3) { left: 22px; }
+
+        .ant-leg {
+            position: absolute;
+            width: 12px;
+            height: 2px;
+            background: #1a0a0a;
+            top: 50%;
+        }
+
+        .ant-leg:nth-child(4) { transform: rotate(30deg); left: 5px; top: 30%; }
+        .ant-leg:nth-child(5) { transform: rotate(-30deg); left: 5px; top: 70%; }
+        .ant-leg:nth-child(6) { transform: rotate(30deg); left: 18px; top: 30%; }
+        .ant-leg:nth-child(7) { transform: rotate(-30deg); left: 18px; top: 70%; }
+
+        @keyframes antWalk {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(20px) rotate(5deg); }
+            50% { transform: translateX(40px) rotate(0deg); }
+            75% { transform: translateX(20px) rotate(-5deg); }
+        }
+
+        /* Elephant with obelisk */
+        .elephant {
+            position: relative;
+            width: 150px;
+            height: 200px;
+            animation: elephantFloat 8s ease-in-out infinite;
+        }
+
+        .elephant-body {
+            position: absolute;
+            bottom: 0;
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(145deg, #4a4a4a, #2d2d2d);
+            border-radius: 40% 40% 50% 50%;
+        }
+
+        .elephant-leg {
+            position: absolute;
+            bottom: -40px;
+            width: 12px;
+            height: 40px;
+            background: linear-gradient(90deg, #3d3d3d, #4a4a4a);
+        }
+
+        .elephant-leg:nth-child(2) { left: 10px; }
+        .elephant-leg:nth-child(3) { right: 10px; }
+
+        .elephant-head {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 45px;
+            background: linear-gradient(145deg, #4a4a4a, #2d2d2d);
+            border-radius: 50% 50% 40% 40%;
+        }
+
+        .trunk {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 50px;
+            background: linear-gradient(90deg, #3d3d3d, #4a4a4a);
+            border-radius: 0 0 50% 50%;
+            animation: trunkSway 4s ease-in-out infinite;
+        }
+
+        .obelisk {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 80px;
+            background: linear-gradient(90deg, #8b7355, #d4c4a8, #8b7355);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+
+        @keyframes elephantFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes trunkSway {
+            0%, 100% { transform: translateX(-50%) rotate(-10deg); }
+            50% { transform: translateX(-50%) rotate(10deg); }
+        }
+
+        /* Title styling */
+        .dalí-title {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(180deg, #1a0a2e 0%, #4a1942 50%, #8b4513 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.5));
+            letter-spacing: 0.2em;
+        }
+
+        /* Infinite corridor effect */
+        .infinite-corridor {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            perspective: 1000px;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .corridor-arch {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 300px;
+            border: 20px solid rgba(139, 69, 19, 0.3);
+            border-bottom: none;
+            border-radius: 200px 200px 0 0;
+            animation: corridorRecede 10s linear infinite;
+        }
+
+        @keyframes corridorRecede {
+            0% {
+                transform: translate(-50%, -50%) translateZ(0) scale(0.1);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translate(-50%, -50%) translateZ(-2000px) scale(10);
+                opacity: 0;
+            }
+        }
+
+        /* Light ray effect */
+        .light-rays {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                from 180deg at 50% 0%,
+                transparent 0deg,
+                rgba(255, 200, 100, 0.1) 10deg,
+                transparent 20deg,
+                transparent 30deg,
+                rgba(255, 200, 100, 0.15) 40deg,
+                transparent 50deg,
+                transparent 60deg,
+                rgba(255, 200, 100, 0.1) 70deg,
+                transparent 80deg,
+                transparent 90deg,
+                rgba(255, 200, 100, 0.12) 100deg,
+                transparent 110deg,
+                transparent 120deg,
+                rgba(255, 200, 100, 0.08) 130deg,
+                transparent 140deg,
+                transparent 150deg,
+                rgba(255, 200, 100, 0.1) 160deg,
+                transparent 170deg,
+                transparent 180deg
+            );
+            z-index: -1;
+            animation: rayRotate 60s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rayRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Parallax layers */
+        .parallax-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 40%;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 300px solid rgba(100, 60, 40, 0.4);
+        }
+
+        .mountain:nth-child(1) { left: 10%; }
+        .mountain:nth-child(2) { left: 40%; border-bottom-color: rgba(80, 50, 30, 0.5); }
+        .mountain:nth-child(3) { right: 10%; }
+
+        /* Section styling */
+        .content-section {
+            min-height: 100vh;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        /* Soft edge cards using SVG filter */
+        .soft-edge {
+            filter: url(#softWobble);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator::before {
+            content: '↓';
+            font-size: 2rem;
+            color: #1a0a2e;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Blob shadow */
+        .blob-shadow {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+            filter: blur(5px);
+        }
+
+        /* Grain overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Grain Overlay -->
+    <div class="grain-overlay"></div>
+
+    <!-- Light Rays -->
+    <div class="light-rays"></div>
+
+    <!-- Desert Background -->
+    <div class="desert-sky"></div>
+    <div class="desert-ground"></div>
+
+    <!-- Parallax Mountains -->
+    <div class="parallax-bg" id="mountains">
+        <div class="mountain" data-speed="0.1"></div>
+        <div class="mountain" data-speed="0.15"></div>
+        <div class="mountain" data-speed="0.08"></div>
+    </div>
+
+    <!-- Infinite Corridor -->
+    <div class="infinite-corridor">
+        <div class="corridor-arch"></div>
+        <div class="corridor-arch" style="animation-delay: -2s;"></div>
+        <div class="corridor-arch" style="animation-delay: -4s;"></div>
+        <div class="corridor-arch" style="animation-delay: -6s;"></div>
+        <div class="corridor-arch" style="animation-delay: -8s;"></div>
+    </div>
+
+    <!-- SVG Filters -->
+    <svg style="display: none;">
+        <defs>
+            <filter id="softWobble" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Hero Section -->
+    <section class="content-section flex flex-col items-center justify-center">
+        <!-- Melting Clocks -->
+        <div class="melting-clock" style="top: 10%; left: 5%; transform: rotate(-15deg);"></div>
+        <div class="melting-clock" style="top: 15%; right: 10%; transform: rotate(10deg); width: 140px; height: 80px;"></div>
+        <div class="melting-clock" style="bottom: 20%; left: 15%; transform: rotate(5deg); width: 120px; height: 70px;"></div>
+
+        <!-- Double Image - Cloud/Face -->
+        <div class="double-image" style="position: absolute; top: 8%; right: 25%;">
+            <div class="cloud-face"></div>
+            <div class="face-features">
+                <div class="eye"></div>
+                <div class="eye"></div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+            </div>
+        </div>
+
+        <!-- Ant -->
+        <div class="ant" style="top: 30%; left: 10%;">
+            <div class="ant-body"></div>
+            <div class="ant-body"></div>
+            <div class="ant-body"></div>
+            <div class="ant-leg"></div>
+            <div class="ant-leg"></div>
+            <div class="ant-leg"></div>
+            <div class="ant-leg"></div>
+        </div>
+
+        <!-- Elephant with Obelisk -->
+        <div class="elephant" style="position: absolute; bottom: 15%; right: 8%;">
+            <div class="obelisk"></div>
+            <div class="elephant-head"></div>
+            <div class="trunk"></div>
+            <div class="elephant-body"></div>
+            <div class="elephant-leg"></div>
+            <div class="elephant-leg"></div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="dalí-title text-center mb-8">THE PERSISTENCE<br>OF MEMORY</h1>
+
+        <p class="text-xl text-amber-900 mb-12 text-center max-w-2xl" style="font-family: 'Playfair Display', serif; font-style: italic;">
+            Where time melts and dreams take flight<br>
+            <span class="text-sm opacity-70">— A Surreal Experience —</span>
+        </p>
+
+        <!-- Floating Stone Navigation -->
+        <nav class="flex gap-8 flex-wrap justify-center">
+            <a href="#works" class="floating-stone">Works</a>
+            <a href="#about" class="floating-stone">About</a>
+            <a href="#contact" class="floating-stone">Contact</a>
+            <a href="#dreams" class="floating-stone">Dreams</a>
+        </nav>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="content-section">
+        <h2 class="text-4xl text-center mb-16" style="font-family: 'Cinzel', serif; color: #1a0a2e;">Selected Works</h2>
+
+        <div class="flex flex-wrap justify-center gap-16 max-w-6xl mx-auto">
+            <!-- Drawer Card 1 -->
+            <div class="drawer-card soft-edge">
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="card-content">
+                    <h3>The Great Masturbator</h3>
+                    <p class="text-sm mt-2">Digital interpretation of the 1929 masterpiece</p>
+                </div>
+                <div class="blob-shadow"></div>
+            </div>
+
+            <!-- Drawer Card 2 -->
+            <div class="drawer-card soft-edge">
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="card-content">
+                    <h3>Elephants</h3>
+                    <p class="text-sm mt-2">Thin legs carrying impossible weights</p>
+                </div>
+                <div class="blob-shadow"></div>
+            </div>
+
+            <!-- Drawer Card 3 -->
+            <div class="drawer-card soft-edge">
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="drawer-leg"></div>
+                <div class="card-content">
+                    <h3>Swallow Flight</h3>
+                    <p class="text-sm mt-2">A tribute to liquid desire</p>
+                </div>
+                <div class="blob-shadow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="content-section flex items-center justify-center">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl mb-12" style="font-family: 'Cinzel', serif; color: #1a0a2e;">The Artist's Mind</h2>
+
+            <div class="relative inline-block">
+                <div class="melting-clock" style="position: absolute; left: -200px; top: -50px; transform: rotate(-30deg);"></div>
+                <div class="melting-clock" style="position: absolute; right: -200px; top: -30px; transform: rotate(25deg); width: 130px;"></div>
+
+                <p class="text-2xl leading-relaxed" style="font-family: 'Playfair Display', serif; color: #2d1810;">
+                    "The difference between a madman and a genius is that one is <em>completely</em> in touch with reality,<br>
+                    while the other is in touch with a <em>different</em> reality."
+                </p>
+                <p class="text-right text-lg mt-8 text-amber-800">— Salvador Dalí</p>
+            </div>
+
+            <!-- Additional ants -->
+            <div class="ant mt-16" style="position: relative; left: -200px;">
+                <div class="ant-body"></div>
+                <div class="ant-body"></div>
+                <div class="ant-body"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="content-section">
+        <div class="max-w-2xl mx-auto text-center">
+            <h2 class="text-4xl mb-12" style="font-family: 'Cinzel', serif; color: #1a0a2e;">Reach Into the Subconscious</h2>
+
+            <form class="space-y-8">
+                <div class="relative">
+                    <input type="text" placeholder="Your Name"
+                        class="w-full p-4 bg-transparent border-2 border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-900"
+                        style="font-family: 'Playfair Display', serif; color: #2d1810;">
+                </div>
+                <div class="relative">
+                    <input type="email" placeholder="Your Email"
+                        class="w-full p-4 bg-transparent border-2 border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-900"
+                        style="font-family: 'Playfair Display', serif; color: #2d1810;">
+                </div>
+                <div class="relative">
+                    <textarea placeholder="Your Message..." rows="5"
+                        class="w-full p-4 bg-transparent border-2 border-amber-900/50 rounded-lg focus:outline-none focus:border-amber-900 resize-none"
+                        style="font-family: 'Playfair Display', serif; color: #2d1810;"></textarea>
+                </div>
+                <button type="submit" class="floating-stone !bg-amber-900 !text-amber-100">
+                    Send to the Void
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dreams Section -->
+    <section id="dreams" class="content-section">
+        <h2 class="text-4xl text-center mb-16" style="font-family: 'Cinzel', serif; color: #1a0a2e;">Dreams Within Dreams</h2>
+
+        <div class="flex flex-wrap justify-center gap-12">
+            <!-- More melting elements -->
+            <div class="melting-clock" style="position: relative; width: 150px; height: 85px;">
+                <div class="blob-shadow" style="bottom: -40px;"></div>
+            </div>
+
+            <!-- Double image -->
+            <div class="double-image" style="width: 250px; height: 150px;">
+                <div class="cloud-face" style="background: radial-gradient(ellipse 100px 80px at 30% 40%, #e8d8b8 0%, transparent 70%), radial-gradient(ellipse 120px 90px at 60% 50%, rgba(232,216,184,0.9) 0%, transparent 70%), radial-gradient(ellipse 80px 50px at 80% 30%, #e8d8b8 0%, transparent 70%);"></div>
+                <div class="face-features">
+                    <div class="eye" style="width: 20px; height: 14px;"></div>
+                    <div class="eye" style="width: 20px; height: 14px;"></div>
+                    <div class="nose" style="width: 10px; height: 25px;"></div>
+                    <div class="mouth" style="width: 50px; height: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Another elephant -->
+            <div class="elephant" style="position: relative; transform: scale(0.8);">
+                <div class="obelisk"></div>
+                <div class="elephant-head"></div>
+                <div class="trunk"></div>
+                <div class="elephant-body"></div>
+                <div class="elephant-leg"></div>
+                <div class="elephant-leg"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator"></div>
+
+    <!-- Footer -->
+    <footer class="py-12 text-center" style="background: rgba(26, 10, 46, 0.3);">
+        <p class="text-amber-900" style="font-family: 'Cinzel', serif;">
+            © 2026 The Persistence of Memory — A Dalí Tribute
+        </p>
+    </footer>
+
+    <script>
+        // Custom Cursor Following
+        const cursor = document.querySelector('.cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Parallax Effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const mountains = document.getElementById('mountains');
+
+            mountains.style.transform = `translateY(${scrolled * 0.3}px)`;
+
+            // Parallax for melting clocks
+            document.querySelectorAll('.melting-clock').forEach((clock, index) => {
+                const speed = 0.05 + (index * 0.02);
+                clock.style.transform = `translateY(${scrolled * speed}px) ${clock.style.transform.replace(/translateY\([^)]+\)/g, '').trim()}`;
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Random floating elements
+        function createRandomAnts() {
+            const ants = document.querySelectorAll('.ant');
+            ants.forEach((ant, index) => {
+                ant.style.left = `${Math.random() * 80 + 10}%`;
+                ant.style.top = `${Math.random() * 60 + 20}%`;
+                ant.style.animationDelay = `${Math.random() * 4}s`;
+            });
+        }
+        createRandomAnts();
+
+        // Add more ants dynamically
+        function spawnAnt() {
+            const ant = document.createElement('div');
+            ant.className = 'ant';
+            ant.style.position = 'fixed';
+            ant.style.left = '-50px';
+            ant.style.top = `${Math.random() * 80 + 10}%`;
+            ant.style.zIndex = '10';
+
+            const bodyHTML = `
+                <div class="ant-body"></div>
+                <div class="ant-body"></div>
+                <div class="ant-body"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+                <div class="ant-leg"></div>
+            `;
+            ant.innerHTML = bodyHTML;
+            document.body.appendChild(ant);
+
+            // Animate across screen
+            let position = -50;
+            const speed = Math.random() * 2 + 1;
+
+            function moveAnt() {
+                position += speed;
+                ant.style.left = position + 'px';
+
+                if (position > window.innerWidth + 50) {
+                    ant.remove();
+                } else {
+                    requestAnimationFrame(moveAnt);
+                }
+            }
+            moveAnt();
+        }
+
+        // Spawn ants periodically
+        setInterval(spawnAnt, 5000);
+
+        // Three.js Scene for enhanced atmosphere
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+
+        // Add floating particles (dust motes)
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particleCount = 500;
+
+        const posArray = new Float32Array(particleCount * 3);
+
+        for(let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 20;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0xffd700,
+            transparent: true,
+            opacity: 0.6
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.x += 0.0002;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.drawer-card, .melting-clock, .double-image, .elephant').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Trigger initial animations
+        setTimeout(() => {
+            document.querySelectorAll('.drawer-card, .melting-clock, .double-image, .elephant').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            });
+        }, 100);
+    </script>
+</body>
+</html>
