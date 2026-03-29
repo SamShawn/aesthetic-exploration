@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Portfolio — Swiss Style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           Swiss Style Portfolio
+           Design Philosophy: Less but Better
+           Reference: Dieter Rams, Massimo Vignelli
+           ============================================ */
+
+        /* ---------- CSS Variables ---------- */
+        :root {
+            /* Colors - Minimal Palette */
+            --color-bg: #FFFFFF;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #6B6B6B;
+            --color-accent: #002FA7;        /* International Klein Blue */
+            --color-accent-hover: #001F8A;
+            --color-border: #E5E5E5;
+
+            /* Typography */
+            --font-primary: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+            /* Spacing (8px base) */
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 48px;
+            --space-xl: 80px;
+            --space-xxl: 120px;
+
+            /* Grid */
+            --grid-columns: 12;
+            --grid-gap: 24px;
+            --container-max: 1440px;
+            --container-side: 48px;
+        }
+
+        /* ---------- Reset & Base ---------- */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ---------- Typography ---------- */
+        .type-display {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .type-h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .type-h2 {
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+        }
+
+        .type-h3 {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .type-body {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        .type-small {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            color: var(--color-text-secondary);
+        }
+
+        .type-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ---------- Layout ---------- */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-side);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-columns), 1fr);
+            gap: var(--grid-gap);
+        }
+
+        /* ---------- Navigation ---------- */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: var(--color-bg);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-side);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--color-text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-md);
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            transition: color 0.2s ease;
+            padding: var(--space-xs) 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        /* ---------- Hero Section ---------- */
+        .hero {
+            min-height: 100vh;
+            padding-top: 72px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            padding: var(--space-xl) 0;
+        }
+
+        .hero-label {
+            margin-bottom: var(--space-sm);
+        }
+
+        .hero-title {
+            margin-bottom: var(--space-md);
+            max-width: 10 columns;
+        }
+
+        .hero-title span {
+            color: var(--color-accent);
+        }
+
+        .hero-description {
+            max-width: 480px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* ---------- Button ---------- */
+        .btn {
+            display: inline-block;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--color-accent);
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--color-accent-hover);
+        }
+
+        /* ---------- Section ---------- */
+        .section {
+            padding: var(--space-xxl) 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .section-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-label {
+            margin-bottom: var(--space-xs);
+        }
+
+        /* ---------- Skills Section ---------- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+        }
+
+        .skills-list {
+            grid-column: 1 / 7;
+        }
+
+        .experience-list {
+            grid-column: 7 / -1;
+        }
+
+        .skill-item {
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .skill-item:last-child {
+            border-bottom: none;
+        }
+
+        .skill-name {
+            font-weight: 500;
+        }
+
+        .skill-level {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        .exp-item {
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .exp-item:last-child {
+            border-bottom: none;
+        }
+
+        .exp-year {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .exp-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .exp-company {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        /* ---------- Projects Section ---------- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--grid-gap);
+        }
+
+        .project-card {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 1px solid var(--color-border);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-accent);
+        }
+
+        .project-image {
+            aspect-ratio: 4 / 3;
+            background: #F5F5F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .project-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--color-border);
+        }
+
+        .project-info {
+            padding: var(--space-sm);
+        }
+
+        .project-category {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ---------- Contact Section ---------- */
+        .contact {
+            background: #F8F8F8;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+        }
+
+        .contact-info {
+            grid-column: 1 / 6;
+        }
+
+        .contact-cta {
+            grid-column: 7 / -1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .contact-email {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            text-decoration: none;
+            color: var(--color-text-primary);
+            transition: color 0.2s ease;
+        }
+
+        .contact-email:hover {
+            color: var(--color-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+
+        .social-link {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            padding: var(--space-xs) 0;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .social-link:hover {
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            padding: var(--space-md) 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 1023px) {
+            :root {
+                --container-side: 24px;
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skills-list,
+            .experience-list {
+                grid-column: 1 / -1;
+            }
+
+            .skills-list {
+                margin-bottom: var(--space-lg);
+            }
+
+            .contact-info,
+            .contact-cta {
+                grid-column: 1 / -1;
+            }
+
+            .contact-cta {
+                margin-top: var(--space-lg);
+            }
+        }
+
+        @media (max-width: 767px) {
+            :root {
+                --container-side: 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .type-display {
+                font-size: 40px;
+            }
+
+            .type-h1 {
+                font-size: 32px;
+            }
+
+            .contact-email {
+                font-size: 24px;
+            }
+        }
+
+        /* ---------- Utility Classes ---------- */
+        .text-accent { color: var(--color-accent); }
+        .text-secondary { color: var(--color-text-secondary); }
+        .mb-xs { margin-bottom: var(--space-xs); }
+        .mb-sm { margin-bottom: var(--space-sm); }
+        .mb-md { margin-bottom: var(--space-md); }
+        .mb-lg { margin-bottom: var(--space-lg); }
+    </style>
+</head>
+<body>
+    <!-- ========== Navigation ========== -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">DESIGNER</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ========== Hero Section ========== -->
+    <section id="about" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <p class="type-label text-secondary mb-sm">Portfolio 2026</p>
+                <h1 class="type-display hero-title">
+                    Designing<br>
+                    <span>Less</span> but<br>
+                    Better.
+                </h1>
+                <p class="type-body text-secondary hero-description">
+                    Senior Digital Designer specializing in Swiss Style and minimalist interfaces.
+                    Following the principles of Dieter Rams — pure form, essential function.
+                </p>
+                <a href="#projects" class="btn">View Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Skills & Experience Section ========== -->
+    <section id="skills" class="section">
+        <div class="container">
+            <div class="section-header">
+                <p class="type-label text-accent mb-xs">Expertise</p>
+                <h2 class="type-h2">Skills & Experience</h2>
+            </div>
+
+            <div class="skills-grid">
+                <!-- Skills List -->
+                <div class="skills-list">
+                    <div class="skill-item">
+                        <span class="skill-name">UI/UX Design</span>
+                        <span class="skill-level">Expert</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Brand Identity</span>
+                        <span class="skill-level">Expert</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Design Systems</span>
+                        <span class="skill-level">Advanced</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Frontend Development</span>
+                        <span class="skill-level">Advanced</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Typography</span>
+                        <span class="skill-level">Expert</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Motion Design</span>
+                        <span class="skill-level">Intermediate</span>
+                    </div>
+                </div>
+
+                <!-- Experience List -->
+                <div class="experience-list">
+                    <div class="exp-item">
+                        <p class="exp-year">2022 — Present</p>
+                        <h3 class="exp-title">Senior Designer</h3>
+                        <p class="exp-company">Studio International, Zurich</p>
+                    </div>
+                    <div class="exp-item">
+                        <p class="exp-year">2019 — 2022</p>
+                        <h3 class="exp-title">Lead UI Designer</h3>
+                        <p class="exp-company">Minimal Labs, Berlin</p>
+                    </div>
+                    <div class="exp-item">
+                        <p class="exp-year">2017 — 2019</p>
+                        <h3 class="exp-title">Visual Designer</h3>
+                        <p class="exp-company">Braun Design Studio</p>
+                    </div>
+                    <div class="exp-item">
+                        <p class="exp-year">2015 — 2017</p>
+                        <h3 class="exp-title">Junior Designer</h3>
+                        <p class="exp-company">Helvetica Agency, Basel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Projects Section ========== -->
+    <section id="projects" class="section">
+        <div class="container">
+            <div class="section-header">
+                <p class="type-label text-accent mb-xs">Selected Work</p>
+                <h2 class="type-h2">Projects</h2>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">Brand Identity</p>
+                        <h3 class="project-title">Apex Architecture</h3>
+                    </div>
+                </a>
+
+                <!-- Project 2 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">Web Design</p>
+                        <h3 class="project-title">Nordic Furniture</h3>
+                    </div>
+                </a>
+
+                <!-- Project 3 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">Design System</p>
+                        <h3 class="project-title">Monotype Library</h3>
+                    </div>
+                </a>
+
+                <!-- Project 4 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">Brand Identity</p>
+                        <h3 class="project-title">Precision Instruments</h3>
+                    </div>
+                </a>
+
+                <!-- Project 5 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">Web Design</p>
+                        <h3 class="project-title">Swiss Watch Co.</h3>
+                    </div>
+                </a>
+
+                <!-- Project 6 -->
+                <a href="#" class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">◆</div>
+                    </div>
+                    <div class="project-info">
+                        <p class="project-category">App Design</p>
+                        <h3 class="project-title">Grid Calculator</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Contact Section ========== -->
+    <section id="contact" class="section contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <p class="type-label text-accent mb-xs">Get in Touch</p>
+                    <h2 class="type-h2">Let's Work<br>Together</h2>
+                    <p class="type-body text-secondary" style="margin-top: var(--space-md); max-width: 320px;">
+                        Available for freelance projects and collaborative opportunities.
+                        Design that speaks through silence.
+                    </p>
+                </div>
+
+                <div class="contact-cta">
+                    <a href="mailto:hello@designer.com" class="contact-email">hello@designer.com</a>
+                    <a href="#contact" class="btn">Start a Project</a>
+
+                    <div class="social-links">
+                        <a href="#" class="social-link">LinkedIn</a>
+                        <a href="#" class="social-link">Dribbble</a>
+                        <a href="#" class="social-link">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Footer ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-text">© 2026 Designer Portfolio. Swiss Style.</p>
+                <p class="footer-text">Less but Better</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Add subtle scroll effect to navigation
+        let lastScroll = 0;
+        const nav = document.querySelector('.nav');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                nav.style.boxShadow = '0 1px 0 var(--color-border)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
+
+            lastScroll = currentScroll;
+        }, { passive: true });
+    </script>
+</body>
+</html>
