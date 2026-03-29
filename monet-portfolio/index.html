@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monet Portfolio | Impressionist Dreams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #E6E6FA;
+            --mint: #98FF98;
+            --soft-pink: #FFB6C1;
+            --buttercream: #FFFACD;
+            --cobalt: #6B8DBB;
+            --pale-lavender: #D8BFD8;
+            --pearl: #FDFAF6;
+            --text-primary: #2D3436;
+            --text-secondary: #636E72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--pearl);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Water Surface Background */
+        .water-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(
+                135deg,
+                var(--lavender) 0%,
+                var(--mint) 25%,
+                var(--soft-pink) 50%,
+                var(--buttercream) 75%,
+                var(--pale-lavender) 100%
+            );
+            background-size: 400% 400%;
+            animation: waterFlow 30s ease infinite;
+        }
+
+        .water-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(107, 141, 187, 0.1) 50%,
+                rgba(152, 255, 152, 0.05) 100%
+            );
+            animation: waterWave 20s ease-in-out infinite;
+        }
+
+        @keyframes waterFlow {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        @keyframes waterWave {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(20px) translateY(-10px); }
+            50% { transform: translateX(0) translateY(-20px); }
+            75% { transform: translateX(-20px) translateY(-10px); }
+        }
+
+        /* Bokeh Orbs */
+        .bokeh {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bokeh-1 {
+            width: 180px;
+            height: 180px;
+            background: var(--buttercream);
+            opacity: 0.5;
+            top: 10%;
+            left: 5%;
+            animation: bokehFloat1 15s ease-in-out infinite;
+        }
+
+        .bokeh-2 {
+            width: 120px;
+            height: 120px;
+            background: var(--soft-pink);
+            opacity: 0.4;
+            top: 60%;
+            right: 10%;
+            animation: bokehFloat2 18s ease-in-out infinite;
+        }
+
+        .bokeh-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--lavender);
+            opacity: 0.35;
+            top: 30%;
+            right: 25%;
+            animation: bokehFloat3 22s ease-in-out infinite;
+        }
+
+        .bokeh-4 {
+            width: 100px;
+            height: 100px;
+            background: var(--mint);
+            opacity: 0.45;
+            bottom: 20%;
+            left: 15%;
+            animation: bokehFloat4 12s ease-in-out infinite;
+        }
+
+        .bokeh-5 {
+            width: 150px;
+            height: 150px;
+            background: var(--pale-lavender);
+            opacity: 0.4;
+            top: 50%;
+            left: 40%;
+            animation: bokehFloat5 20s ease-in-out infinite;
+        }
+
+        .bokeh-6 {
+            width: 80px;
+            height: 80px;
+            background: var(--buttercream);
+            opacity: 0.55;
+            top: 15%;
+            right: 40%;
+            animation: bokehFloat6 14s ease-in-out infinite;
+        }
+
+        @keyframes bokehFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, -20px) scale(0.95); }
+        }
+
+        @keyframes bokehFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-25px, 35px) scale(1.05); }
+            66% { transform: translate(15px, 50px) scale(0.9); }
+        }
+
+        @keyframes bokehFloat3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, 20px) scale(1.15); }
+            66% { transform: translate(20px, -30px) scale(0.85); }
+        }
+
+        @keyframes bokehFloat4 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-30px, -25px) scale(1.08); }
+            66% { transform: translate(10px, -40px) scale(0.92); }
+        }
+
+        @keyframes bokehFloat5 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-15px, 30px) scale(1.12); }
+            66% { transform: translate(25px, 15px) scale(0.88); }
+        }
+
+        @keyframes bokehFloat6 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(20px, -15px) scale(1.2); }
+            66% { transform: translate(-10px, -25px) scale(0.8); }
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(253, 250, 246, 0.25);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(107, 141, 187, 0.15);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            box-shadow: 0 16px 48px rgba(107, 141, 187, 0.25);
+        }
+
+        /* Typography */
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-shadow: 0 2px 20px rgba(107, 141, 187, 0.2);
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .body-text {
+            font-size: 1.125rem;
+            line-height: 2;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .fade-in-delay-1 {
+            animation-delay: 0.5s;
+        }
+
+        .fade-in-delay-2 {
+            animation-delay: 1s;
+        }
+
+        .fade-in-delay-3 {
+            animation-delay: 1.5s;
+        }
+
+        .fade-in-delay-4 {
+            animation-delay: 2s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Breathing text animation */
+        .breathing {
+            animation: breathingText 4s ease-in-out infinite;
+        }
+
+        @keyframes breathingText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Ripple decoration */
+        .ripple {
+            position: absolute;
+            border: 1px solid rgba(107, 141, 187, 0.2);
+            border-radius: 50%;
+            animation: rippleExpand 4s ease-out infinite;
+        }
+
+        .ripple:nth-child(2) { animation-delay: 1.3s; }
+        .ripple:nth-child(3) { animation-delay: 2.6s; }
+
+        @keyframes rippleExpand {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Link underline animation */
+        .link-underline {
+            position: relative;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--cobalt);
+            transition: width 0.4s ease;
+        }
+
+        .link-underline:hover::after {
+            width: 100%;
+        }
+
+        /* Navigation */
+        .nav-glass {
+            background: rgba(253, 250, 246, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .water-bg {
+                animation: none;
+            }
+            .bokeh {
+                animation: none;
+            }
+            .fade-in {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            .breathing {
+                animation: none;
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .glass-card {
+                border-radius: 24px;
+                padding: 24px !important;
+            }
+
+            .bokeh-3, .bokeh-5 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Animated Background -->
+    <div class="water-bg"></div>
+
+    <!-- Bokeh Light Orbs -->
+    <div class="bokeh bokeh-1"></div>
+    <div class="bokeh bokeh-2"></div>
+    <div class="bokeh bokeh-3"></div>
+    <div class="bokeh bokeh-4"></div>
+    <div class="bokeh bokeh-5"></div>
+    <div class="bokeh bokeh-6"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-playfair text-xl font-500 link-underline">M</a>
+            <div class="flex gap-8 text-sm tracking-widest uppercase">
+                <a href="#about" class="link-underline">About</a>
+                <a href="#works" class="link-underline">Works</a>
+                <a href="#contact" class="link-underline">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-6 pt-20 relative">
+        <div class="text-center relative">
+            <!-- Decorative ripples -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 pointer-events-none">
+                <div class="ripple w-full h-full"></div>
+                <div class="ripple w-full h-full"></div>
+                <div class="ripple w-full h-full"></div>
+            </div>
+
+            <div class="glass-card p-12 md:p-16 inline-block fade-in">
+                <h1 class="hero-title font-playfair text-[#2D3436] breathing mb-4">
+                    Claire Monet
+                </h1>
+                <p class="body-text text-lg md:text-xl italic max-w-md mx-auto">
+                    Capturing moments of light, where color dances and memories breathe
+                </p>
+                <div class="mt-8 flex justify-center gap-6 text-sm tracking-widest uppercase">
+                    <a href="#works" class="link-underline">View Works</a>
+                    <span class="text-[#636E72]">·</span>
+                    <a href="#contact" class="link-underline">Get in Touch</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 fade-in fade-in-delay-4">
+            <div class="w-6 h-10 border-2 border-[#636E72] rounded-full flex justify-center pt-2">
+                <div class="w-1 h-2 bg-[#636E72] rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 md:py-32 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-8 md:p-12 fade-in fade-in-delay-1">
+                <h2 class="section-title font-playfair text-[#2D3436] mb-8">About</h2>
+                <div class="body-text">
+                    <p class="mb-6">
+                        Like Monet's water lilies that bloomed endlessly in his garden at Giverny,
+                        I seek the beauty in everyday moments—the way morning light trembles on water,
+                        how shadows paint their soft edges across familiar spaces.
+                    </p>
+                    <p>
+                        My work is an exploration of atmosphere and feeling, capturing not what the eye sees,
+                        but what the heart remembers. Each piece is an impression, a whisper of a moment
+                        suspended in time.
+                    </p>
+                </div>
+                <div class="mt-8 flex gap-4">
+                    <span class="px-4 py-2 bg-[rgba(255,255,255,0.3)] rounded-full text-sm">Watercolor</span>
+                    <span class="px-4 py-2 bg-[rgba(255,255,255,0.3)] rounded-full text-sm">Oil</span>
+                    <span class="px-4 py-2 bg-[rgba(255,255,255,0.3)] rounded-full text-sm">Digital</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title font-playfair text-[#2D3436] mb-12 text-center fade-in">Selected Works</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Work Card 1 -->
+                <div class="glass-card p-6 fade-in fade-in-delay-2">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-[#E6E6FA] via-[#FFB6C1] to-[#98FF98] opacity-70">
+                    </div>
+                    <h3 class="font-playfair text-xl mb-2">Morning at the Pond</h3>
+                    <p class="body-text text-sm">Oil on canvas · 2024</p>
+                </div>
+
+                <!-- Work Card 2 -->
+                <div class="glass-card p-6 fade-in fade-in-delay-2">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-[#FFFACD] via-[#D8BFD8] to-[#6B8DBB] opacity-70">
+                    </div>
+                    <h3 class="font-playfair text-xl mb-2">Twilight Garden</h3>
+                    <p class="body-text text-sm">Watercolor · 2024</p>
+                </div>
+
+                <!-- Work Card 3 -->
+                <div class="glass-card p-6 fade-in fade-in-delay-3">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-[#98FF98] via-[#E6E6FA] to-[#FFB6C1] opacity-70">
+                    </div>
+                    <h3 class="font-playfair text-xl mb-2">Reflections</h3>
+                    <p class="body-text text-sm">Mixed media · 2023</p>
+                </div>
+
+                <!-- Work Card 4 -->
+                <div class="glass-card p-6 fade-in fade-in-delay-3">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-[#6B8DBB] via-[#D8BFD8] to-[#FFFACD] opacity-70">
+                    </div>
+                    <h3 class="font-playfair text-xl mb-2">Soft Light</h3>
+                    <p class="body-text text-sm">Digital · 2023</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 md:py-32 px-6">
+        <div class="max-w-2xl mx-auto text-center">
+            <div class="glass-card p-12 fade-in fade-in-delay-4">
+                <h2 class="section-title font-playfair text-[#2D3436] mb-6">Let's Create Together</h2>
+                <p class="body-text mb-8 max-w-md mx-auto">
+                    I believe every collaboration is like painting en plein air—
+                    embracing the unexpected and finding beauty in the process.
+                </p>
+                <a href="mailto:hello@clairemonet.art"
+                   class="inline-block px-8 py-4 bg-[rgba(107,141,187,0.2)] hover:bg-[rgba(107,141,187,0.3)] rounded-full text-[#2D3436] transition-all duration-300 link-underline">
+                    hello@clairemonet.art
+                </a>
+
+                <div class="mt-8 pt-8 border-t border-[rgba(107,141,187,0.2)] flex justify-center gap-8">
+                    <a href="#" class="link-underline text-sm tracking-widest">Instagram</a>
+                    <a href="#" class="link-underline text-sm tracking-widest">Behance</a>
+                    <a href="#" class="link-underline text-sm tracking-widest">Dribbble</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 text-center">
+        <p class="body-text text-sm">
+            <span class="font-playfair">Claude Monet</span> · Impressionist Portfolio Template
+        </p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+
+        // Parallax effect on scroll
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    const bokehElements = document.querySelectorAll('.bokeh');
+
+                    bokehElements.forEach((bokeh, index) => {
+                        const speed = 0.05 + (index * 0.02);
+                        bokeh.style.transform = `translateY(${scrolled * speed}px)`;
+                    });
+
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    </script>
+</body>
+</html>
