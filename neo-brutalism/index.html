@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOISE//VOID — Creative Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #F5F0E8;
+      --black: #0A0A0A;
+      --neon: #BFFF00;
+      --purple: #5B00B5;
+      --pink: #FF3366;
+      --text: #1A1A1A;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      cursor: none;
+    }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.1s ease;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--pink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Noise Overlay */
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 5vw;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22vw;
+      line-height: 0.85;
+      color: var(--black);
+      position: relative;
+      z-index: 10;
+      white-space: nowrap;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span {
+      display: inline-block;
+    }
+
+    .hero-title .outline {
+      -webkit-text-stroke: 4px var(--black);
+      color: transparent;
+      position: relative;
+    }
+
+    /* Floating Shapes */
+    .shape {
+      position: absolute;
+      border: 4px solid var(--black);
+      z-index: 5;
+    }
+
+    .shape-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: var(--neon);
+      opacity: 0.9;
+    }
+
+    .shape-circle-2 {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: var(--purple);
+      opacity: 0.7;
+      border-width: 6px;
+    }
+
+    .shape-rect {
+      width: 180px;
+      height: 120px;
+      background: var(--pink);
+      transform: rotate(-12deg);
+    }
+
+    .shape-blob {
+      width: 280px;
+      height: 280px;
+      background: linear-gradient(135deg, var(--neon) 0%, var(--purple) 100%);
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      opacity: 0.6;
+      border: none;
+    }
+
+    .shape-arc {
+      width: 300px;
+      height: 300px;
+      border: 8px solid var(--black);
+      border-radius: 50%;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      transform: rotate(45deg);
+      background: transparent !important;
+    }
+
+    /* Shape Positions */
+    .shape-1 { top: 15%; left: 8%; }
+    .shape-2 { top: 60%; right: 5%; }
+    .shape-3 { top: 25%; right: 15%; }
+    .shape-4 { bottom: 10%; left: 20%; }
+    .shape-5 { top: 40%; left: -5%; }
+
+    /* Manifesto Section */
+    .manifesto {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10vw 5vw;
+      position: relative;
+    }
+
+    .manifesto-box {
+      max-width: 900px;
+      background: var(--black);
+      padding: 60px 40px;
+      position: relative;
+      border: 6px solid var(--black);
+    }
+
+    .manifesto-box::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      right: -20px;
+      bottom: 20px;
+      background: var(--neon);
+      z-index: -1;
+    }
+
+    .manifesto h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 8vw, 96px);
+      color: var(--bg);
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .manifesto p {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--bg);
+      text-align: justify;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Works Section */
+    .works {
+      min-height: 100vh;
+      padding: 15vw 5vw;
+      position: relative;
+    }
+
+    .works-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 10vw;
+      color: var(--black);
+      margin-bottom: 8vw;
+      transform: rotate(-3deg);
+    }
+
+    .works-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5vw;
+    }
+
+    .work-item {
+      flex: 1 1 300px;
+      max-width: 450px;
+      position: relative;
+    }
+
+    .work-image {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--purple);
+      border: 5px solid var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .work-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.1) 10px,
+        rgba(0,0,0,0.1) 11px
+      );
+    }
+
+    .work-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(1.2);
+      transition: filter 0.3s ease;
+    }
+
+    .work-item:hover .work-image img {
+      filter: grayscale(0%) contrast(1);
+    }
+
+    .work-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 120px;
+      color: var(--neon);
+      position: absolute;
+      top: -60px;
+      right: -20px;
+      line-height: 1;
+      z-index: -1;
+    }
+
+    .work-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      margin-top: 20px;
+      color: var(--black);
+      text-transform: uppercase;
+    }
+
+    .work-tags {
+      font-size: 12px;
+      color: var(--purple);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-top: 8px;
+    }
+
+    /* Contact Section */
+    .contact {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10vw;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: var(--neon);
+      border-radius: 50%;
+      top: -150px;
+      right: -100px;
+      opacity: 0.3;
+    }
+
+    .contact h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 7vw, 80px);
+      color: var(--bg);
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .btn-brutal {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(24px, 4vw, 36px);
+      padding: 20px 60px;
+      background: var(--neon);
+      color: var(--black);
+      border: 6px solid var(--bg);
+      cursor: none;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all 0.15s ease;
+      box-shadow: 12px 12px 0 var(--pink);
+    }
+
+    .btn-brutal:hover {
+      transform: translate(-6px, -6px);
+      box-shadow: 18px 18px 0 var(--pink);
+      background: var(--bg);
+    }
+
+    .btn-brutal:active {
+      transform: translate(6px, 6px);
+      box-shadow: 6px 6px 0 var(--pink);
+    }
+
+    /* Glitch Effect */
+    .glitch {
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      left: 2px;
+      text-shadow: -2px 0 var(--pink);
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+
+    .glitch::after {
+      left: -2px;
+      text-shadow: -2px 0 var(--neon);
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim2 5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+      0% { clip: rect(30px, 9999px, 10px, 0); }
+      5% { clip: rect(70px, 9999px, 90px, 0); }
+      10% { clip: rect(20px, 9999px, 50px, 0); }
+      15% { clip: rect(80px, 9999px, 100px, 0); }
+      20% { clip: rect(10px, 9999px, 40px, 0); }
+      100% { clip: rect(60px, 9999px, 20px, 0); }
+    }
+
+    @keyframes glitch-anim2 {
+      0% { clip: rect(60px, 9999px, 80px, 0); }
+      5% { clip: rect(20px, 9999px, 60px, 0); }
+      10% { clip: rect(80px, 9999px, 10px, 0); }
+      15% { clip: rect(30px, 9999px, 50px, 0); }
+      20% { clip: rect(70px, 9999px, 30px, 0); }
+      100% { clip: rect(40px, 9999px, 70px, 0); }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      color: var(--bg);
+      text-decoration: none;
+      letter-spacing: 0.2em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--bg);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--neon);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* Diagonal Lines */
+    .diagonal {
+      position: absolute;
+      width: 4px;
+      height: 100%;
+      background: var(--black);
+      transform: rotate(15deg);
+      opacity: 0.3;
+    }
+
+    .diagonal-1 { left: 20%; }
+    .diagonal-2 { right: 30%; }
+
+    /* Screen Shake */
+    .shake {
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px) rotate(-0.5deg); }
+      75% { transform: translateX(5px) rotate(0.5deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 28vw;
+      }
+
+      .shape {
+        opacity: 0.7;
+      }
+
+      .shape-1 { width: 100px; height: 100px; }
+      .shape-2 { width: 80px; height: 80px; }
+      .shape-3 { width: 100px; height: 80px; }
+      .shape-4 { display: none; }
+      .shape-5 { display: none; }
+
+      .manifesto-box {
+        padding: 40px 25px;
+      }
+
+      .manifesto-box::before {
+        top: -12px;
+        left: 12px;
+        right: -12px;
+        bottom: 12px;
+      }
+
+      .works-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .work-item {
+        max-width: 100%;
+      }
+
+      html {
+        cursor: auto;
+      }
+
+      .cursor, .cursor-dot {
+        display: none;
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <!-- Noise Overlay -->
+  <div class="noise"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="nav-logo">NOISE//VOID</a>
+    <div class="nav-links">
+      <a href="#manifesto">Manifesto</a>
+      <a href="#works">Works</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="shape shape-circle shape-1" data-speed="0.05"></div>
+    <div class="shape shape-blob shape-2" data-speed="0.08"></div>
+    <div class="shape shape-rect shape-3" data-speed="0.03"></div>
+    <div class="shape shape-circle-2 shape-4" data-speed="0.06"></div>
+    <div class="shape shape-arc shape-5" data-speed="0.04"></div>
+
+    <h1 class="hero-title">
+      <span class="outline">CREATIVE</span>
+      <br>
+      <span>DIRECTOR</span>
+    </h1>
+
+    <div class="diagonal diagonal-1"></div>
+    <div class="diagonal diagonal-2"></div>
+  </section>
+
+  <!-- Manifesto Section -->
+  <section class="manifesto" id="manifesto">
+    <div class="manifesto-box">
+      <h2>Manifesto</h2>
+      <p>
+        WE REJECT THE MUNDANE. WE REJECT THE SAFE. DESIGN IS NOT DECORATION—IT IS WARFARE.
+        EVERY PIXEL A PUNCH. EVERY ANIMATION A SHOUT. WE BUILD FOR THOSE WHO DARE TO STARE.
+        NO COMPROMISES. NO APOLOGIES. ONLY VISUAL IMPACT THAT RESONATES THROUGH THE VOID.
+      </p>
+    </div>
+  </section>
+
+  <!-- Works Section -->
+  <section class="works" id="works">
+    <h2 class="works-title">Selected Works</h2>
+    <div class="works-grid">
+      <div class="work-item">
+        <span class="work-number">01</span>
+        <div class="work-image">
+          <div style="width:100%;height:100%;background:linear-gradient(45deg,var(--purple),var(--pink));"></div>
+        </div>
+        <h3 class="work-title">Neon Dreams</h3>
+        <p class="work-tags">Brand Identity / 2024</p>
+      </div>
+      <div class="work-item">
+        <span class="work-number">02</span>
+        <div class="work-image">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--neon),var(--black));"></div>
+        </div>
+        <h3 class="work-title">Void Protocol</h3>
+        <p class="work-tags">Web Experience / 2024</p>
+      </div>
+      <div class="work-item">
+        <span class="work-number">03</span>
+        <div class="work-image">
+          <div style="width:100%;height:100%;background:linear-gradient(180deg,var(--pink),var(--purple));"></div>
+        </div>
+        <h3 class="work-title">Brutal Form</h3>
+        <p class="work-tags">Art Direction / 2023</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <h2>Let's Create<br>Something Bold</h2>
+    <button class="btn-brutal" data-text="GET IN TOUCH">Get In Touch</button>
+  </section>
+
+  <script>
+    // Register GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Custom Cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorDot = document.querySelector('.cursor-dot');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.15;
+      cursorY += (mouseY - cursorY) * 0.15;
+
+      cursor.style.left = cursorX - 12 + 'px';
+      cursor.style.top = cursorY - 12 + 'px';
+      cursorDot.style.left = mouseX - 4 + 'px';
+      cursorDot.style.top = mouseY - 4 + 'px';
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Cursor hover effect
+    const interactiveElements = document.querySelectorAll('a, button, .work-item');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(1.5)';
+        cursor.style.borderColor = '#FF3366';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursor.style.borderColor = '#0A0A0A';
+      });
+    });
+
+    // Parallax on Hero Shapes
+    const shapes = document.querySelectorAll('.shape');
+    document.querySelector('.hero').addEventListener('mousemove', (e) => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const moveX = (e.clientX - centerX) / centerX;
+      const moveY = (e.clientY - centerY) / centerY;
+
+      shapes.forEach(shape => {
+        const speed = parseFloat(shape.dataset.speed) || 0.05;
+        const offsetX = moveX * 50 * speed;
+        const offsetY = moveY * 50 * speed;
+
+        gsap.to(shape, {
+          x: offsetX,
+          y: offsetY,
+          duration: 0.5,
+          ease: 'power2.out'
+        });
+      });
+    });
+
+    // Hero Animation on Load
+    const heroTl = gsap.timeline();
+
+    heroTl
+      .from('.shape', {
+        scale: 0,
+        rotation: -180,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'back.out(1.7)'
+      })
+      .from('.hero-title span', {
+        y: 200,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power3.out'
+      }, '-=0.5')
+      .from('.diagonal', {
+        scaleY: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.inOut'
+      }, '-=0.3');
+
+    // Manifesto scroll animation
+    gsap.from('.manifesto-box', {
+      scrollTrigger: {
+        trigger: '.manifesto',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 100,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
+
+    // Works animation
+    gsap.from('.work-item', {
+      scrollTrigger: {
+        trigger: '.works',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 150,
+      rotation: -5,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power3.out'
+    });
+
+    // Contact animation
+    gsap.from('.contact h2', {
+      scrollTrigger: {
+        trigger: '.contact',
+        start: 'top 70%'
+      },
+      y: 50,
+      opacity: 0,
+      duration: 0.6
+    });
+
+    gsap.from('.btn-brutal', {
+      scrollTrigger: {
+        trigger: '.contact',
+        start: 'top 60%'
+      },
+      scale: 0,
+      duration: 0.5,
+      ease: 'back.out(1.7)'
+    });
+
+    // Glitch button click
+    const btn = document.querySelector('.btn-brutal');
+    btn.addEventListener('click', (e) => {
+      // Screen shake
+      document.body.classList.add('shake');
+      setTimeout(() => document.body.classList.remove('shake'), 300);
+
+      // Glitch effect
+      btn.classList.add('glitch');
+      setTimeout(() => btn.classList.remove('glitch'), 500);
+
+      // Random color burst
+      const colors = ['#BFFF00', '#5B00B5', '#FF3366', '#F5F0E8'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      btn.style.background = randomColor;
+    });
+
+    // Floating animation for shapes
+    shapes.forEach((shape, i) => {
+      gsap.to(shape, {
+        y: '+=30',
+        rotation: i % 2 === 0 ? 10 : -10,
+        duration: 2 + i * 0.5,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    });
+
+    // Click anywhere for subtle effect
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('button')) {
+        const ripple = document.createElement('div');
+        ripple.style.cssText = `
+          position: fixed;
+          left: ${e.clientX}px;
+          top: ${e.clientY}px;
+          width: 20px;
+          height: 20px;
+          border: 2px solid var(--pink);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 9998;
+          transform: translate(-50%, -50%);
+        `;
+        document.body.appendChild(ripple);
+
+        gsap.to(ripple, {
+          scale: 10,
+          opacity: 0,
+          duration: 0.5,
+          onComplete: () => ripple.remove()
+        });
+      }
+    });
+  </script>
+</body>
+</html>
